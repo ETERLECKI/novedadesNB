@@ -72,15 +72,15 @@ public class login extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getInt("success") == 1) {
+                                Log.d("TAG", "Vlor de idcargo. " + jsonObject.getInt("idcargo"));
                                 Toast.makeText(getApplicationContext(), "Acceso correcto", Toast.LENGTH_LONG).show();
+                                upreferencias.putString("usuario", usuario.getText().toString());
+                                upreferencias.putInt("tipo", jsonObject.getInt("idcargo"));
                                 startActivity(new Intent(login.this, MainActivity.class));
                                 if (estadoSesion.isChecked()) {
                                     upreferencias.putString("sesion", "abierta");
-                                    upreferencias.putString("usuario", usuario.getText().toString());
-                                    upreferencias.putString("tipo", "1");
-                                    upreferencias.commit();
-                                    Log.d("TAG", sesion);
                                 }
+                                upreferencias.commit();
                             } else {
                                 Log.d("TAG", "Ingreso incorrecto");
                             }

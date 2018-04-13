@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerViewAdapter adapter;
     private SwipeRefreshLayout sRl;
     private String subTituloA;
+    Integer tipo_usuario;
+    MenuItem est_abiertas;
 
     @Override
     public void onBackPressed() {
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TAG", "entra en main");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -58,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         subTituloA = "Todas ";
         preferencias = getSharedPreferences("MisPreferencias", getApplicationContext().MODE_PRIVATE);
         upreferencias = preferencias.edit();
+        tipo_usuario = preferencias.getInt("tipo", 2);
+        est_abiertas = findViewById(R.id.mnu_estado);
+
 
         sRl = findViewById(R.id.sRl);
         //sRl.setColorSchemeResources(R.color.colorPrimary);
@@ -93,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        Log.d("TAG", "Tipo de usuario: " + tipo_usuario);
+        if (tipo_usuario == 1) {
+            menu.findItem(R.id.mnu_estado).setVisible(true);
+        }
         return true;
     }
 
@@ -105,36 +116,24 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.mnu_taller) {
-            //setTitle("Novedades para Taller NB");
-            //getSupportActionBar().setSubtitle("Taller ");
-            //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#227585")));
             subTituloA = "Taller ";
             requestJsonObject("Taller");
             return true;
         }
 
         if (id == R.id.mnu_patrimonial) {
-            //setTitle("Novedades para Patrimonial");
-            //getSupportActionBar().setSubtitle("Patrimonial ");
-            //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF8A80")));
             subTituloA = "Patrimonial ";
             requestJsonObject("Patrimonial");
             return true;
         }
 
         if (id == R.id.mnu_trafico) {
-            //setTitle("Novedades para Tráfico");
-            //getSupportActionBar().setSubtitle("Tráfico ");
-            //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#B388FF")));
             subTituloA = "Tráfico ";
             requestJsonObject("Trafico");
             return true;
         }
 
         if (id == R.id.mnu_conformes) {
-            //setTitle("Novedades para Conformes");
-            //getSupportActionBar().setSubtitle("Conformes ");
-            //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E91E63")));
             subTituloA = "Conformes ";
             requestJsonObject("Conformes");
             return true;
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.mnu_cerrar_sesion) {
             upreferencias.putString("sesion", "cerrada");
             upreferencias.commit();
-            startActivity(new Intent(this, login.class));
+            finish();
             return true;
         }
 
