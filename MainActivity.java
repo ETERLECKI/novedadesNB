@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TAG", "entra en main");
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,13 +59,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
-        toolbar.setLogo(R.drawable.ic_launcher);
+        //toolbar.setLogo(R.drawable.ic_launcher);
+        toolbar.getBackground().setAlpha(70);
         subTituloA = "Todas ";
         preferencias = getSharedPreferences("MisPreferencias", getApplicationContext().MODE_PRIVATE);
         upreferencias = preferencias.edit();
         tipo_usuario = preferencias.getInt("tipo", 2);
         est_abiertas = findViewById(R.id.mnu_estado);
-
 
         sRl = findViewById(R.id.sRl);
         //sRl.setColorSchemeResources(R.color.colorPrimary);

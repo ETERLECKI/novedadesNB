@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -44,6 +45,8 @@ public class acciones extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_acciones);
 
         a_numinc = findViewById(R.id.acciones_incidente);
@@ -145,6 +148,7 @@ public class acciones extends AppCompatActivity {
                         a_chofer.setText("Chofer: " + chofer);
                         a_unidad.setText("Unidad: " + unidad);
                         a_accion.setText(accion);
+                        getSupportActionBar().setTitle("Incidente N° " + id);
                         //}
                     }
                 } catch (JSONException e) {

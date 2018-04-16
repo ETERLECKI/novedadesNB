@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -57,6 +58,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_agregar_novedad);
 
 
@@ -73,6 +75,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
         autoUnidad = findViewById(R.id.auto_unidad);
         autoChoferApe.setThreshold(1);
         autoUnidad.setThreshold(1);
+        getSupportActionBar().hide();
 
 
         autoChoferApe.addTextChangedListener(new TextWatcher() {
