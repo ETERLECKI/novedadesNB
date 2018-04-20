@@ -340,7 +340,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
                             JSONArray jsonArray = jsonObject.getJSONArray("Name");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                String country = jsonObject1.getString("responsable");
+                                String country = jsonObject1.getString("origen");
                                 itemsOrigen.add(country);
                             }
                         }
