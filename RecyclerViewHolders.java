@@ -1,6 +1,5 @@
 package ar.com.nbcargo.nbcargo_novedades;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +17,6 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
     public TextView fecha;
     public View tarjeta;
     public TextView titId;
-    private Context context;
 
     public RecyclerViewHolders(View itemView) {
         super(itemView);
@@ -31,18 +29,14 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
         fecha = itemView.findViewById(R.id.tarj_text_fecha);
         tarjeta = itemView.findViewById(R.id.tarjetas_card);
         titId = itemView.findViewById(R.id.tarj_tit_id);
-        //context=itemView.getContext();
     }
 
     @Override
     public void onClick(View view) {
-        Log.d("TAG", "Entra en el click");
         Intent intent = new Intent(itemView.getContext(), acciones.class);
         intent.putExtra("id", id.getText());
         Log.d("TAG", "Valor de id: " + id.getText());
         itemView.getContext().startActivity(intent);
-        //context.startActivity(intent);
-        Log.d("TAG", "Termina el click");
     }
 
 }

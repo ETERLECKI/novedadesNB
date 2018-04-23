@@ -123,6 +123,19 @@ public class acciones extends AppCompatActivity {
 
         cargaDatosAcciones(valorDeId);
 
+
+        descuento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (descuento.isChecked()) {
+                    monto.setEnabled(true);
+                    monto.setFocusable(true);
+                } else {
+                    monto.setEnabled(false);
+                }
+            }
+        });
+
         acciones_btn_realizado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,7 +162,7 @@ public class acciones extends AppCompatActivity {
                     }
                     case "Descuento": {
                         Log.d("TAG", "Entra en Descuento");
-                        url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString() + "&descuento=" + descuento.isChecked() + "&monto=" + monto.toString();
+                        url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString() + "&descuento=" + descuento.isChecked() + "&monto=" + monto.getText().toString();
                         break;
                     }
                     case "Cerrada": {
@@ -207,12 +220,10 @@ public class acciones extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-                Log.d("TAG", "Entra a unidad");
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.getInt("success") == 1) {
                         JSONArray jsonArray = jsonObject.getJSONArray("accion");
-                        //for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(0);
                         String id = jsonObject1.getString("id");
                         String fecha = jsonObject1.getString("fecha");
@@ -224,7 +235,6 @@ public class acciones extends AppCompatActivity {
                         String accion2 = jsonObject1.getString("accion2");
                         estado = jsonObject1.getString("estado");
 
-                        //itemsUnidad.add(unidad);
                         a_fecha.setText("Fecha: " + fecha);
                         a_novedad.setText(novedad);
                         a_severidad.setText(severidad);

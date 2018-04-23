@@ -13,7 +13,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     private List<ItemObject> itemList;
     private Context context;
-
+    private View layoutView;
 
     public RecyclerViewAdapter(Context context, List<ItemObject> itemList) {
         this.itemList = itemList;
@@ -22,8 +22,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, null);
+        layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, null);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }
@@ -64,16 +63,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
                 holder.severidad.setImageResource(R.drawable.ok);
                 break;
             }
-            case "Moderada": {
-                holder.severidad.setImageResource(R.drawable.atencion);
-                break;
-            }
             case "Grave": {
                 holder.severidad.setImageResource(R.drawable.alerta);
                 break;
             }
         }
-
 
     }
 

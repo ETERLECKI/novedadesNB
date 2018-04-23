@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerViewAdapter adapter;
     private SwipeRefreshLayout sRl;
     private String subTituloA;
+    String estado;
     Integer tipo_usuario;
     MenuItem est_abiertas;
+    TextView texto_error;
 
     @Override
     public void onBackPressed() {
@@ -66,20 +70,20 @@ public class MainActivity extends AppCompatActivity {
         upreferencias = preferencias.edit();
         tipo_usuario = preferencias.getInt("tipo", 2);
         est_abiertas = findViewById(R.id.mnu_estado);
+        texto_error = findViewById(R.id.main_textoerror);
+        estado = "Abiertas";
 
         sRl = findViewById(R.id.sRl);
-        //sRl.setColorSchemeResources(R.color.colorPrimary);
-        //sRl.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
         sRl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 sRl.setRefreshing(false);
                 subTituloA = "Todas ";
-                requestJsonObject("Todas");
+                requestJsonObject("Todas", "");
             }
         });
 
-        requestJsonObject("Todas");
+        requestJsonObject("Todas", "");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        requestJsonObject("Todas");
+        requestJsonObject("Todas", "");
         subTituloA = "Todas ";
     }
 
@@ -118,43 +122,63 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.mnu_taller) {
-            subTituloA = "Taller ";
-            requestJsonObject("Taller");
+            subTituloA = "Taller";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("", "Taller");
+            } else {
+                requestJsonObject("Filtro_1", "Taller");
+            }
             return true;
         }
 
         if (id == R.id.mnu_patrimonial) {
-            subTituloA = "Patrimonial ";
-            requestJsonObject("Patrimonial");
+            subTituloA = "Patrimonial";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("", "Patrimonial");
+            } else {
+                requestJsonObject("Filtro_1", "Patrimonial");
+            }
             return true;
         }
 
         if (id == R.id.mnu_trafico) {
-            subTituloA = "Tráfico ";
-            requestJsonObject("Trafico");
+            subTituloA = "Tráfico";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("", "Trafico");
+            } else {
+                requestJsonObject("Filtro_1", "Trafico");
+            }
             return true;
         }
 
         if (id == R.id.mnu_conformes) {
-            subTituloA = "Conformes ";
-            requestJsonObject("Conformes");
+            subTituloA = "Conformes";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("", "Conformes");
+            } else {
+                requestJsonObject("Filtro_1", "Conformes");
+            }
             return true;
         }
 
         if (id == R.id.mnu_documentacion) {
-            //setTitle("Novedades para Documentación");
-            //getSupportActionBar().setSubtitle("Documentación ");
-            //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2D566B")));
-            subTituloA = "Documentación ";
-            requestJsonObject("Documentacion");
+            subTituloA = "Documentación";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("", "Documentacion");
+            } else {
+                requestJsonObject("Filtro_1", "Documentacion");
+            }
+
             return true;
         }
 
         if (id == R.id.mnu_todas) {
-            //setTitle("Todas las novedades");
-            //getSupportActionBar().setSubtitle("Todas ");
-            subTituloA = "Todas ";
-            requestJsonObject("Todas");
+            subTituloA = "Todas";
+            if (estado.equals("Abiertas")) {
+                requestJsonObject("Todas", "");
+            } else {
+                requestJsonObject("Todas1", "");
+            }
             return true;
         }
 
@@ -165,41 +189,59 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.mnu_est_abiertas) {
+            estado = "Abiertas";
+            getSupportActionBar().setTitle("Novedades");
+            requestJsonObject("Todas", "");
+            return true;
+        }
+
+        if (id == R.id.mnu_est_realizadas) {
+            estado = "Realizadas";
+            getSupportActionBar().setTitle(estado);
+            requestJsonObject("Todas_1", "");
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    private void requestJsonObject(String consulta) {
+    private void requestJsonObject(String consulta, String filtro) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
 
-        String url = "http://192.168.5.199/novedades_nb_cards.php?filtro=" + consulta;
-        Log.d("pagina", "Página: " + url);
+        String url = "http://192.168.5.199/novedades_nb_cards.php?consulta=" + consulta + "&filtro=" + filtro;
+        Log.d("TAG1", "Página: " + url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Response " + response);
+
                 GsonBuilder builder = new GsonBuilder();
                 Gson mGson = builder.create();
-
                 List<ItemObject> posts = new ArrayList<ItemObject>();
                 posts.clear();
-                posts = Arrays.asList(mGson.fromJson(response, ItemObject[].class));
-                Log.d(TAG, "Lista de items:" + posts);
 
-                adapter = new RecyclerViewAdapter(MainActivity.this, posts);
-                recyclerView.setAdapter(adapter);
-                getSupportActionBar().setSubtitle("");
-                getSupportActionBar().setSubtitle(subTituloA + "(" + String.valueOf(adapter.getItemCount()) + ")");
-
+                if (response.equals("")) {
+                    Toast.makeText(MainActivity.this, "Actualmente no hay novedades a mostrar de este tipo", Toast.LENGTH_LONG).show();
+                    getSupportActionBar().setSubtitle(subTituloA + " (0)");
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    posts = Arrays.asList(mGson.fromJson(response, ItemObject[].class));
+                    adapter = new RecyclerViewAdapter(MainActivity.this, posts);
+                    recyclerView.setAdapter(adapter);
+                    getSupportActionBar().setSubtitle("");
+                    getSupportActionBar().setSubtitle(subTituloA + " (" + String.valueOf(adapter.getItemCount()) + ")");
+                }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error " + error.getMessage());
+                Log.d("TAG1", "Error " + error.getMessage());
             }
         });
         queue.add(stringRequest);
