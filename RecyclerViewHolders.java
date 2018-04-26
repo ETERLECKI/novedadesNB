@@ -1,6 +1,8 @@
 package ar.com.nbcargo.nbcargo_novedades;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +36,14 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(itemView.getContext(), acciones.class);
-        intent.putExtra("id", id.getText());
+        Bundle valores = new Bundle();
+        //intent.putExtra("id", id.getText());
+        valores.putString("id", id.getText().toString());
+        ColorDrawable buttonColor = (ColorDrawable) tarjeta.getBackground();
+        int colorId = Integer.valueOf(buttonColor.getColor());
+        valores.putInt("color", colorId);
+        intent.putExtras(valores);
+        Log.d("TAG2", "Color: " + colorId);
         Log.d("TAG", "Valor de id: " + id.getText());
         itemView.getContext().startActivity(intent);
     }
