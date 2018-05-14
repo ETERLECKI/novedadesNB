@@ -94,6 +94,7 @@ public class acciones extends AppCompatActivity {
 
         acciones_seguro = findViewById(R.id.acciones_seguro);
 
+
         //final String fondo_tarjeta = getIntent().getStringExtra("color");
 
         Bundle datos = getIntent().getExtras();
@@ -120,7 +121,7 @@ public class acciones extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                fecha_cierre.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                fecha_cierre.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
 
                             }
                         }, year, month, day);
@@ -141,7 +142,7 @@ public class acciones extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                fecha_seguro.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                fecha_seguro.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             }
                         }, year, month, day);
                 picker.show();
@@ -207,8 +208,8 @@ public class acciones extends AppCompatActivity {
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString() + "&descuento=" + descuento.isChecked() + "&monto=" + monto.getText().toString();
                         break;
                     }
-                    case "Cerrada": {
-                        Log.d("TAG2", "Entra en Cerrada");
+                    case "Realizada": {
+                        Log.d("TAG2", "Entra en Realizada");
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString();
                         break;
                     }
@@ -264,6 +265,8 @@ public class acciones extends AppCompatActivity {
             public void onResponse(String response) {
 
                 try {
+
+
                     JSONObject jsonObject = new JSONObject(response);
 
                     Log.d("TAG2", "response: " + response);
@@ -286,7 +289,6 @@ public class acciones extends AppCompatActivity {
                     //Boolean aplicaDesc =jsonObject1.getBoolean("aplica_descuento");
                     //Boolean aplicaSeg = jsonObject1.getBoolean("aplica_seguro");
                     String obs_seg = jsonObject1.getString("obs_seg");
-
 
                     a_fecha.setText("Fecha: " + fecha);
                     a_novedad.setText(novedad);

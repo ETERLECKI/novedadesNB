@@ -213,7 +213,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                eText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                eText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             }
                         }, year, month, day);
                 picker.show();

@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.mnu_est_realizadas) {
             estado = "Realizadas";
             getSupportActionBar().setTitle(estado);
-            requestJsonObject("Todas_1", "");
+            requestJsonObject("Todas1", "");
             return true;
         }
 

@@ -37,15 +37,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.fecha.setText(itemList.get(position).getfecha());
         switch (itemList.get(position).getarea()) {
             case "Taller": {
-                holder.tarjeta.setBackgroundColor(Color.parseColor("#227585"));
+                holder.tarjeta.setBackgroundColor(Color.parseColor("#FF5722"));
                 break;
             }
             case "Patrimonial": {
-                holder.tarjeta.setBackgroundColor(Color.parseColor("#FF8A80"));
+                holder.tarjeta.setBackgroundColor(Color.parseColor("#F44336"));
                 break;
             }
             case "Documentacion": {
-                holder.tarjeta.setBackgroundColor(Color.parseColor("#2D566B"));
+                holder.tarjeta.setBackgroundColor(Color.parseColor("#9C27B0"));
                 break;
             }
             case "Trafico": {
