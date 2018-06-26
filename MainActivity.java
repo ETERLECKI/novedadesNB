@@ -203,6 +203,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.mnu_est_direccion) {
+            Log.d("Tag1", "Entro al botón");
+            estado = "Direccion";
+            getSupportActionBar().setTitle(estado);
+            startActivity(new Intent(MainActivity.this, direccion.class));
+            Log.d("Tag1", "Paso start activity");
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

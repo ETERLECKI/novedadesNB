@@ -95,8 +95,6 @@ public class acciones extends AppCompatActivity {
         acciones_seguro = findViewById(R.id.acciones_seguro);
 
 
-        //final String fondo_tarjeta = getIntent().getStringExtra("color");
-
         Bundle datos = getIntent().getExtras();
         int fondo_tarjeta = datos.getInt("color");
         tarjeta.setBackgroundColor(fondo_tarjeta);
