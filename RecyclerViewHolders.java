@@ -19,6 +19,9 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
     public TextView fecha;
     public View tarjeta;
     public TextView titId;
+    public TextView estadotxt;
+    public Intent intent;
+
 
     public RecyclerViewHolders(View itemView) {
         super(itemView);
@@ -31,13 +34,26 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
         fecha = itemView.findViewById(R.id.tarj_text_fecha);
         tarjeta = itemView.findViewById(R.id.tarjetas_card);
         titId = itemView.findViewById(R.id.tarj_tit_id);
+        estadotxt = itemView.findViewById(R.id.tarj_estado);
+
     }
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(itemView.getContext(), acciones.class);
+
+        String valorEstado;
+        valorEstado = estadotxt.getText().toString();
+        Log.d("Tag2", "Estado: " + valorEstado);
+
+        if (valorEstado.equals("Realizada")) {
+            intent = new Intent(itemView.getContext(), direccion.class);
+            Log.d("Tag2", "intent dirección");
+        } else {
+            intent = new Intent(itemView.getContext(), acciones.class);
+            Log.d("Tag2", "intent acciones");
+        }
+
         Bundle valores = new Bundle();
-        //intent.putExtra("id", id.getText());
         valores.putString("id", id.getText().toString());
         ColorDrawable buttonColor = (ColorDrawable) tarjeta.getBackground();
         int colorId = Integer.valueOf(buttonColor.getColor());

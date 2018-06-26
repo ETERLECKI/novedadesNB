@@ -35,6 +35,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.chofer.setText(itemList.get(position).getChofer());
         holder.unidad.setText(itemList.get(position).getunidad());
         holder.fecha.setText(itemList.get(position).getfecha());
+        holder.estadotxt.setText(itemList.get(position).getEstado());
+
         switch (itemList.get(position).getarea()) {
             case "Taller": {
                 holder.tarjeta.setBackgroundColor(Color.parseColor("#FF5722"));
@@ -75,6 +77,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public int getItemCount() {
         return this.itemList.size();
     }
-
 
 }

@@ -18,9 +18,11 @@ public class ItemObject {
     private String fecha;
     @SerializedName("area")
     private String area;
+    @SerializedName("estado")
+    private String estados;
 
 
-    public ItemObject(String novedad, String id, String chofer, String unidad, String fecha) {
+    public ItemObject(String novedad, String id, String chofer, String unidad, String severidad, String fecha, String area, String estados) {
         this.novedad = novedad;
         this.id = id;
         this.chofer = chofer;
@@ -28,6 +30,7 @@ public class ItemObject {
         this.severidad = severidad;
         this.fecha = fecha;
         this.area = area;
+        this.estados = estados;
 
     }
 
@@ -57,6 +60,10 @@ public class ItemObject {
 
     public String getarea() {
         return area;
+    }
+
+    public String getEstado() {
+        return estados;
     }
 
 }

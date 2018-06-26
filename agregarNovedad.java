@@ -1,10 +1,8 @@
 package ar.com.nbcargo.nbcargo_novedades;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -14,9 +12,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -33,16 +31,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class agregarNovedad extends AppCompatActivity implements AdapterView.OnItemClickListener, OnItemSelectedListener {
 
     Spinner spinner;
-    DatePickerDialog picker;
-    EditText eText;
     AutoCompleteTextView autoChoferApe;
     AutoCompleteTextView autoUnidad;
+    TextView consumo;
+    TextView monto;
     String URLarea = "http://192.168.5.199/spinnersanovedad.php?filtro=area";
     String URLchofer = "http://192.168.5.199/qchoferes.php";
     String URLunidad = "http://192.168.5.199/qunidades.php";
@@ -52,6 +49,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
     ArrayList<String> itemsUnidad;
     EditText editObs;
     Button aceptar;
+    EditText odometro;
     private Spinner cmbNovedades;
     private Spinner cmbSeveridad;
 
@@ -73,10 +71,18 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
         editObs = findViewById(R.id.edit_obs);
         autoChoferApe = findViewById(R.id.auto_chofer);
         autoUnidad = findViewById(R.id.auto_unidad);
+        consumo = findViewById(R.id.edit_consumo);
+        monto = findViewById(R.id.edit_monto);
+        odometro = findViewById(R.id.edit_odometro);
         autoChoferApe.setThreshold(1);
         autoUnidad.setThreshold(1);
         getSupportActionBar().hide();
 
+        //Oculto a_consumo y monto
+        consumo.setVisibility(View.GONE);
+        monto.setVisibility(View.GONE);
+        odometro.setVisibility(View.GONE);
+        autoUnidad.setVisibility(View.GONE);
 
         autoChoferApe.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,7 +108,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
         autoChoferApe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), autoChoferApe.getText().toString(), Toast.LENGTH_LONG).show();
+
                 String filtroChofer = autoChoferApe.getText().toString();
                 loadchofer(URLchofer, filtroChofer);
             }
@@ -112,15 +118,36 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
 
-                String URLagreganov = "http://192.168.5.199/transporte1.php?fecha=" + eText.getText().toString() + "&origen=" + spinner.getSelectedItem().toString() + "&chofer=" + autoChoferApe.getText().toString() + "&unidad=" + autoUnidad.getText().toString() + "&novedad=" + cmbNovedades.getSelectedItem().toString() + "&severidad=" + cmbSeveridad.getSelectedItem().toString() + "&observaciones=" + editObs.getText().toString() + "&estado=Abierta";
+                String URLagreganov = "http://192.168.5.199/transporte1.php?origen=" + spinner.getSelectedItem().toString() + "&chofer=" + autoChoferApe.getText().toString() + "&novedad=" + cmbNovedades.getSelectedItem().toString() + "&severidad=" + cmbSeveridad.getSelectedItem().toString() + "&observaciones=" + editObs.getText().toString() + "&estado=Abierta";
+                //URLagreganov.getBytes("ISO-8859-1","UTF-8");
+                if (spinner.getSelectedItem().toString().equals("Taller") || spinner.getSelectedItem().toString().equals("Patrimonial") || spinner.getSelectedItem().toString().equals("Conformes")) {
+                    URLagreganov = URLagreganov + "&unidad=" + autoUnidad.getText().toString();
+                }
+
+                if (cmbNovedades.getSelectedItem().toString().equals("Exceso consumo combustible")) {
+                    URLagreganov = URLagreganov + "&consumo=" + consumo.getText().toString();
+                    URLagreganov = URLagreganov + "&monto_descuento=" + monto.getText().toString();
+                    URLagreganov = URLagreganov + "&descuento=1";
+                    URLagreganov = URLagreganov + "&odometro=" + odometro.getText().toString();
+                } else if (cmbNovedades.getSelectedItem().toString().equals("Roturas")) {
+                    URLagreganov = URLagreganov + "&monto_descuento=" + monto.getText().toString();
+                    URLagreganov = URLagreganov + "&descuento=2";
+                    URLagreganov = URLagreganov + "&odometro=" + odometro.getText().toString();
+                } else if (cmbNovedades.getSelectedItem().toString().equals("Accidentes")) {
+                    URLagreganov = URLagreganov + "&odometro=" + odometro.getText().toString();
+                }
                 URLagreganov = URLagreganov.replace(" ", "+");
-                Log.d("TAG", URLagreganov);
+                URLagreganov = URLagreganov.replace("á", "a");
+                URLagreganov = URLagreganov.replace("é", "e");
+                URLagreganov = URLagreganov.replace("í", "i");
+                URLagreganov = URLagreganov.replace("ó", "o");
+                URLagreganov = URLagreganov.replace("ú", "u");
+                Log.d("Tag2", "URL: " + URLagreganov);
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, URLagreganov, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
-                        Log.d("TAG", "Entra a unidad");
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getInt("success") == 1) {
@@ -155,7 +182,29 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String novedad = cmbNovedades.getItemAtPosition(cmbNovedades.getSelectedItemPosition()).toString();
-                Toast.makeText(getApplicationContext(), novedad, Toast.LENGTH_LONG).show();
+
+                if (spinner.getSelectedItem().toString().equals("Taller") || spinner.getSelectedItem().toString().equals("Patrimonial")) {
+                    autoUnidad.setVisibility(View.VISIBLE);
+                } else {
+                    autoUnidad.setVisibility(View.GONE);
+                }
+                if (novedad.equals("Exceso consumo combustible")) {
+                    monto.setVisibility(View.VISIBLE);
+                    consumo.setVisibility(View.VISIBLE);
+                    odometro.setVisibility(View.VISIBLE);
+                    monto.setHint("Monto de la excedencia");
+                } else if (novedad.equals("Roturas")) {
+                    monto.setVisibility(View.VISIBLE);
+                    odometro.setVisibility(View.VISIBLE);
+                    consumo.setVisibility(View.GONE);
+                    monto.setHint("Monto de la reparación");
+                } else if (novedad.equals("Accidentes")) {
+                    odometro.setVisibility(View.VISIBLE);
+                } else {
+                    monto.setVisibility(View.GONE);
+                    consumo.setVisibility(View.GONE);
+                    odometro.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -169,7 +218,6 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String country = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-                Toast.makeText(getApplicationContext(), country, Toast.LENGTH_LONG).show();
                 URLarea = "http://192.168.5.199/spinnersanovedad.php?filtro=" + country;
                 loadSpinnerData(URLarea, "novedad");
             }
@@ -182,7 +230,6 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
 
         cmbSeveridad = findViewById(R.id.spinner_severidad);
 
-        eText = findViewById(R.id.editText1);
 
         final String[] datos_severidad =
                 new String[]{"Leve", "Grave"};
@@ -199,27 +246,6 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
 
         cmbSeveridad.setAdapter(adaptador_severidad);
 
-        //Datepicker
-        eText.setInputType(InputType.TYPE_NULL);
-        eText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-                // date picker dialog
-                picker = new DatePickerDialog(agregarNovedad.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                eText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            }
-                        }, year, month, day);
-                picker.show();
-            }
-
-        });
     }
 
     private void AgregarDAtos() {
@@ -268,9 +294,9 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
 
     private void loadchofer(String URLchofer, final String filtro) {
 
-        Log.d("TAG", "Entra a choferes");
+
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        Log.d("TAG", URLchofer + "?chofer=" + filtro);
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URLchofer + "?chofer=" + filtro, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -286,9 +312,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
                             itemsChofer.add(chofer1);
                         }
                     }
-                    Log.d("TAG", "Valores de choferes: " + String.valueOf((itemsChofer)));
-                    Log.d("TAG", "Entro a apellido");
-                    //itemsChofer.clear();
+
                     autoChoferApe.setAdapter(new ArrayAdapter<String>(agregarNovedad.this, android.R.layout.simple_list_item_1, itemsChofer));
 
 
@@ -373,7 +397,7 @@ public class agregarNovedad extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Log.d("TAG", "Zona de error");
+                Log.d("Tag2", "Zona de error");
             }
         });
         int socketTimeout = 30000;

@@ -38,13 +38,12 @@ public class acciones extends AppCompatActivity {
     TextView a_severidad;
     TextView a_chofer;
     TextView a_unidad;
+    TextView a_observacion;
     TextView a_accion;
     EditText fecha_seguro;
     EditText fecha_cierre;
     DatePickerDialog picker;
     Button acciones_btn_realizado;
-    CheckBox descuento;
-    EditText monto;
     View acciones_seguro;
     String estado;
     EditText observaciones;
@@ -58,16 +57,15 @@ public class acciones extends AppCompatActivity {
     TextView tit_gasto;
     TextView tit_monto;
     TextView tit_cierre;
+    TextView a_consumo;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("TAG2", "Entra en acciones");
+
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_acciones);
-
         a_fecha = findViewById(R.id.acciones_fecha);
         a_novedad = findViewById(R.id.acciones_novedad);
         a_severidad = findViewById(R.id.acciones_severidad);
@@ -79,10 +77,10 @@ public class acciones extends AppCompatActivity {
         tit_gasto = findViewById(R.id.acciones_tit_gasto);
         tit_monto = findViewById(R.id.acciones_tit_rec);
         tit_cierre = findViewById(R.id.acciones_tit_fechacierre);
+        a_consumo = findViewById(R.id.acciones_txt_consumo);
+        a_observacion = findViewById(R.id.acciones_txt_obs);
 
         acciones_btn_realizado = findViewById(R.id.acciones_btn_acp);
-        descuento = findViewById(R.id.acciones_chk_descuento);
-        monto = findViewById(R.id.acciones_edit_monto);
         observaciones = findViewById(R.id.acciones_edit_obs);
         tarjeta = findViewById(R.id.acciones_lay_detail);
 
@@ -95,7 +93,8 @@ public class acciones extends AppCompatActivity {
         acciones_seguro = findViewById(R.id.acciones_seguro);
 
 
-        //final String fondo_tarjeta = getIntent().getStringExtra("color");
+        //Visibilidad inicial descuento
+        a_consumo.setVisibility(View.GONE);
 
         Bundle datos = getIntent().getExtras();
         int fondo_tarjeta = datos.getInt("color");
@@ -167,56 +166,44 @@ public class acciones extends AppCompatActivity {
         });
 
 
-        descuento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (descuento.isChecked()) {
-                    monto.setEnabled(true);
-                    monto.setFocusable(true);
-                } else {
-                    monto.setEnabled(false);
-                }
-            }
-        });
-
         acciones_btn_realizado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Log.d("TAG2", "Valor de estado: " + estado.toString());
                 switch (estado.toString()) {
 
                     case "Abierta": {
-                        Log.d("TAG2", "Entra en Abierta");
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString();
                         break;
                     }
                     case "Accion2": {
-                        Log.d("TAG2", "Entra en Accion2");
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString();
                         break;
                     }
                     case "Seguro": {
-                        Log.d("TAG2", "Entra en Seguro");
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString() +
                                 "&na_seg=" + na_Seguro.isChecked() + "&fecha_seguro=" + fecha_seguro.getText().toString() + "&monto_seguro=" +
                                 monto_seguro.getText().toString() + "&rec_seguro=" + rec_seguro.getText().toString() + "&fecha_cierre=" + fecha_cierre.getText().toString();
                         break;
                     }
                     case "Descuento": {
-                        Log.d("TAG2", "Entra en Descuento");
-                        url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString() + "&descuento=" + descuento.isChecked() + "&monto=" + monto.getText().toString();
+                        url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString();
                         break;
                     }
                     case "Realizada": {
-                        Log.d("TAG2", "Entra en Realizada");
                         url = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + observaciones.getText().toString();
                         break;
                     }
                 }
 
                 url = url.replace(" ", "+");
-                Log.d("TAGurl", url);
+                url = url.replace("á", "a");
+                url = url.replace("é", "e");
+                url = url.replace("í", "i");
+                url = url.replace("ó", "o");
+                url = url.replace("ú", "u");
+
+                Log.d("Tag2", url);
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -224,7 +211,7 @@ public class acciones extends AppCompatActivity {
                     public void onResponse(String response) {
 
                         try {
-                            Log.d("TAG2", "Valor de url: " + url);
+                            Log.d("Tag2", "Valor de url: " + url);
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getInt("success") == 1) {
                                 Toast.makeText(acciones.this, "Acción guardada correctamente", Toast.LENGTH_SHORT).show();
@@ -266,10 +253,8 @@ public class acciones extends AppCompatActivity {
 
                 try {
 
-
                     JSONObject jsonObject = new JSONObject(response);
-
-                    Log.d("TAG2", "response: " + response);
+                    Log.d("Tag2", "Response: " + response);
                     JSONArray jsonArray = jsonObject.getJSONArray("Name");
                     JSONObject jsonObject1 = jsonArray.getJSONObject(0);
                     String id = jsonObject1.getString("id");
@@ -286,16 +271,29 @@ public class acciones extends AppCompatActivity {
                     String recu = jsonObject1.getString("monto_recuperado");
                     String cierre = jsonObject1.getString("cierre_seguro");
                     String montoDesc = jsonObject1.getString("monto_descuento");
-                    //Boolean aplicaDesc =jsonObject1.getBoolean("aplica_descuento");
-                    //Boolean aplicaSeg = jsonObject1.getBoolean("aplica_seguro");
                     String obs_seg = jsonObject1.getString("obs_seg");
+                    String consumo = jsonObject1.getString("consumo");
+                    String aplica_descuento = jsonObject1.getString("aplica_descuento");
+                    String monto_descuento = jsonObject1.getString("monto_descuento");
+                    String observaciones = jsonObject1.getString("observaciones");
+
+                    if (aplica_descuento.equals("1")) {
+                        a_consumo.setVisibility(View.VISIBLE);
+                        a_consumo.setText("Consumo: " + consumo + " lts/100Km");
+                    } else if (aplica_descuento.equals("2")) {
+                        a_consumo.setVisibility(View.VISIBLE);
+                        a_consumo.setText("Monto estimado de reparación: $" + monto_descuento + ".-");
+                    }
 
                     a_fecha.setText("Fecha: " + fecha);
                     a_novedad.setText(novedad);
                     a_severidad.setText(severidad);
                     a_chofer.setText("Chofer: " + chofer);
                     a_unidad.setText("Unidad: " + unidad);
-
+                    a_observacion.setText(observaciones);
+                    if (unidad.equals("")) {
+                        a_unidad.setVisibility(View.GONE);
+                    }
                     if (!denun.equals("null")) {
                         fecha_seguro.setText(denun);
                     }
@@ -308,14 +306,8 @@ public class acciones extends AppCompatActivity {
                     if (!cierre.equals("null")) {
                         fecha_cierre.setText(cierre);
                     }
-                    //na_Seguro.setChecked(aplicaSeg);
-                    //descuento.setChecked(aplicaDesc);
-                    if (!montoDesc.equals("null")) {
-                        monto.setText(montoDesc);
-                    }
 
                     if (estado.equals("Abierta")) {
-                        Log.d("TAG2", "Entra en texto accion con estado = " + estado.toString());
                         a_accion.setText(accion);
                     } else if (estado.equals("Seguro")) {
                         a_accion.setText("Completar fechas y montos de seguro");
@@ -323,16 +315,16 @@ public class acciones extends AppCompatActivity {
                         na_Seguro.setVisibility(View.VISIBLE);
                     } else if (estado.equals("Descuento")) {
                         a_accion.setText("Completar monto de Reparación/exceso de combustible");
-                        descuento.setVisibility(View.VISIBLE);
-                        monto.setVisibility(View.VISIBLE);
                     } else if (estado.equals("Accion2")) {
                         a_accion.setText(accion2);
                     }
+
                     getSupportActionBar().setTitle("Novedad N° " + id);
 
 
                 } catch (JSONException e) {
-                    Log.d("TAG2", "Error en Try/Catch");
+                    Log.d("Tag2", "Error en Try/Catch");
+                    Toast.makeText(acciones.this, "Error" + e, Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
 
@@ -341,7 +333,7 @@ public class acciones extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Log.d("TAG", "Zona de error unidad");
+                Log.d("Tag2", "Zona de error unidad");
             }
         });
         int socketTimeout = 30000;

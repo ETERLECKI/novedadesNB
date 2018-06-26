@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem est_abiertas;
     TextView texto_error;
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -193,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
             estado = "Abiertas";
             getSupportActionBar().setTitle("Novedades");
             requestJsonObject("Todas", "");
+            upreferencias.putString("valorEstado", "Abiertas");
+            upreferencias.commit();
             return true;
         }
 
@@ -200,8 +203,11 @@ public class MainActivity extends AppCompatActivity {
             estado = "Realizadas";
             getSupportActionBar().setTitle(estado);
             requestJsonObject("Todas1", "");
+            upreferencias.putString("valorEstado", "Realizadas");
+            upreferencias.commit();
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -241,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("TAG1", "Error " + error.getMessage());
+                Log.d("Tag2", "Error " + error.getMessage());
             }
         });
         queue.add(stringRequest);
