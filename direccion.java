@@ -78,13 +78,12 @@ public class direccion extends AppCompatActivity {
     String valorDeId;
     String aplicaDescuento;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        Log.d("Tag2", "Leegué hasta acá");
         setContentView(R.layout.activity_direccion);
-        Log.d("Tag2", "Leegué hasta acá1");
 
 //Asigno nombres a las vistas
         dir_card_titulo = findViewById(R.id.dir_card_titulo);
@@ -161,6 +160,7 @@ public class direccion extends AppCompatActivity {
         cargaDatosAcciones(valorDeId);
 
     }
+
 
     //Función que carga los datos desde la página PHP
     private void cargaDatosAcciones(String consulta) {
@@ -299,7 +299,7 @@ public class direccion extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Log.d("TAG", "Zona de error unidad");
+                Log.d("Tag2", "Zona de error unidad");
             }
         });
         int socketTimeout = 30000;
@@ -328,8 +328,8 @@ public class direccion extends AppCompatActivity {
                     aplicaDescuento = "0";
                 }
 
-                urlfin = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&obs_final=" + dir_obs_final.getText().toString() + "&cerro=" + "&aplica_desc_dir="
-                        + aplicaDescuento + "&monto_dir=" + dir_monto_final + "&estado=Cerrada";
+                urlfin = "http://192.168.5.199/acciones.php?id=" + valorDeId + "&observaciones=" + dir_obs_final.getText().toString() + "&realizo=" + "&descuento="
+                        + aplicaDescuento + "&monto=" + dir_monto_final + "&estado=Cerrada";
 
 
                 urlfin = urlfin.replace(" ", "+");
@@ -339,15 +339,15 @@ public class direccion extends AppCompatActivity {
                 urlfin = urlfin.replace("ó", "o");
                 urlfin = urlfin.replace("ú", "u");
 
-                Log.d("TAGurl", url);
+                Log.d("Tag2", urlfin);
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, urlfin, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
                         try {
-                            Log.d("TAG2", "Valor de url: " + url);
+                            Log.d("Tag2", "Valor de url: " + urlfin);
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getInt("success") == 1) {
                                 Toast.makeText(direccion.this, "Acción guardada correctamente", Toast.LENGTH_SHORT).show();
@@ -363,7 +363,7 @@ public class direccion extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Log.d("TAG2", "Zona de error btn_realizado");
+                        Log.d("Tag2", "Zona de error btn_realizado");
                         Toast.makeText(direccion.this, "Error al generar consulta", Toast.LENGTH_SHORT).show();
                     }
                 });

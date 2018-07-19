@@ -75,7 +75,7 @@ public class login extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if (jsonObject.getInt("success") == 1) {
-                                Log.d("TAG", "Valor de idcargo. " + jsonObject.getInt("idcargo"));
+                                Log.d("Tag2", "Valor de idcargo. " + jsonObject.getInt("idcargo"));
                                 Toast.makeText(getApplicationContext(), "Acceso correcto", Toast.LENGTH_LONG).show();
                                 upreferencias.putString("usuario", usuario.getText().toString());
                                 upreferencias.putInt("tipo", jsonObject.getInt("idcargo"));

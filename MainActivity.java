@@ -43,7 +43,32 @@ public class MainActivity extends AppCompatActivity {
     Integer tipo_usuario;
     MenuItem est_abiertas;
     TextView texto_error;
+    String filtrado;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        estado = preferencias.getString("valorEstado", "Abiertas");
+        filtrado = preferencias.getString("filtro", "Todas");
+        subTituloA = filtrado;
+        Log.d("Tag2", "Estado: " + estado + " filtro: " + filtrado);
+        if (estado.equals("Abiertas") & filtrado.equals("Todas")) {
+            requestJsonObject("Todas", "");
+        } else if (estado.equals("Realizadas")) {
+            if (filtrado.equals("Todas")) {
+                requestJsonObject("Todas1", "");
+            } else {
+                requestJsonObject("Filtro_1", filtrado);
+            }
+        } else {
+            Log.d("Tag2", "entro a filtro abiertas");
+            requestJsonObject("", filtrado);
+        }
+        //requestJsonObject("Todas", "");
+
+        getSupportActionBar().setTitle(estado);
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -54,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("TAG", "entra en main");
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -66,25 +90,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         //toolbar.setLogo(R.drawable.ic_launcher);
         toolbar.getBackground().setAlpha(70);
-        subTituloA = "Todas ";
         preferencias = getSharedPreferences("MisPreferencias", getApplicationContext().MODE_PRIVATE);
         upreferencias = preferencias.edit();
         tipo_usuario = preferencias.getInt("tipo", 2);
         est_abiertas = findViewById(R.id.mnu_estado);
         texto_error = findViewById(R.id.main_textoerror);
-        estado = "Abiertas";
+        estado = preferencias.getString("valorEstado", "Abiertas");
+        filtrado = preferencias.getString("filtro", "Todas");
 
         sRl = findViewById(R.id.sRl);
         sRl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d("Tag2", "Entro a refresh");
                 sRl.setRefreshing(false);
-                subTituloA = "Todas ";
-                requestJsonObject("Todas", "");
+                onResume();
             }
         });
-
-        requestJsonObject("Todas", "");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -96,20 +118,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        requestJsonObject("Todas", "");
-        subTituloA = "Todas ";
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        Log.d("TAG", "Tipo de usuario: " + tipo_usuario);
+        Log.d("Tag2", "Tipo de usuario: " + tipo_usuario);
         if (tipo_usuario == 1) {
             menu.findItem(R.id.mnu_estado).setVisible(true);
+        } else {
+            menu.findItem(R.id.mnu_estado).setVisible(false);
         }
         return true;
     }
@@ -123,63 +140,81 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.mnu_taller) {
-            subTituloA = "Taller";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Taller";
+            upreferencias.putString("filtro", "Taller");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("", "Taller");
             } else {
                 requestJsonObject("Filtro_1", "Taller");
-            }
+            }*/
+            onResume();
             return true;
         }
 
         if (id == R.id.mnu_patrimonial) {
-            subTituloA = "Patrimonial";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Patrimonial";
+            upreferencias.putString("filtro", "Patrimonial");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("", "Patrimonial");
             } else {
                 requestJsonObject("Filtro_1", "Patrimonial");
-            }
+            }*/
+            onResume();
             return true;
         }
 
         if (id == R.id.mnu_trafico) {
-            subTituloA = "Tráfico";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Tráfico";
+            upreferencias.putString("filtro", "Trafico");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("", "Trafico");
             } else {
                 requestJsonObject("Filtro_1", "Trafico");
-            }
+            }*/
+            onResume();
             return true;
         }
 
         if (id == R.id.mnu_conformes) {
-            subTituloA = "Conformes";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Conformes";
+            upreferencias.putString("filtro", "Conformes");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("", "Conformes");
             } else {
                 requestJsonObject("Filtro_1", "Conformes");
-            }
+            }*/
+            onResume();
             return true;
         }
 
         if (id == R.id.mnu_documentacion) {
-            subTituloA = "Documentación";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Documentación";
+            upreferencias.putString("filtro", "Documentacion");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("", "Documentacion");
             } else {
                 requestJsonObject("Filtro_1", "Documentacion");
-            }
+            }*/
+            onResume();
 
             return true;
         }
 
         if (id == R.id.mnu_todas) {
-            subTituloA = "Todas";
-            if (estado.equals("Abiertas")) {
+            //subTituloA = "Todas";
+            upreferencias.putString("filtro", "Todas");
+            upreferencias.commit();
+            /*if (estado.equals("Abiertas")) {
                 requestJsonObject("Todas", "");
             } else {
                 requestJsonObject("Todas1", "");
-            }
+            }*/
+            onResume();
             return true;
         }
 
@@ -191,20 +226,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.mnu_est_abiertas) {
-            estado = "Abiertas";
-            getSupportActionBar().setTitle("Novedades");
-            requestJsonObject("Todas", "");
+            //estado = "Abiertas";
+            //getSupportActionBar().setTitle("Novedades");
+            //requestJsonObject("Todas", "");
             upreferencias.putString("valorEstado", "Abiertas");
             upreferencias.commit();
+            onResume();
             return true;
         }
 
         if (id == R.id.mnu_est_realizadas) {
-            estado = "Realizadas";
-            getSupportActionBar().setTitle(estado);
-            requestJsonObject("Todas1", "");
+            //estado = "Realizadas";
+            //getSupportActionBar().setTitle(estado);
             upreferencias.putString("valorEstado", "Realizadas");
             upreferencias.commit();
+            onResume();
             return true;
         }
 
@@ -213,41 +249,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestJsonObject(String consulta, String filtro) {
-
         RequestQueue queue = Volley.newRequestQueue(this);
 
-
         String url = "http://192.168.5.199/novedades_nb_cards.php?consulta=" + consulta + "&filtro=" + filtro;
-        Log.d("TAG1", "Página: " + url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
 
-                GsonBuilder builder = new GsonBuilder();
-                Gson mGson = builder.create();
-                List<ItemObject> posts = new ArrayList<ItemObject>();
-                posts.clear();
-
-                if (response.equals("")) {
-                    Toast.makeText(MainActivity.this, "Actualmente no hay novedades a mostrar de este tipo", Toast.LENGTH_LONG).show();
-                    getSupportActionBar().setSubtitle(subTituloA + " (0)");
-                    recyclerView.setVisibility(View.GONE);
-                } else {
+                if (response.length() != 6) {
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson mGson = builder.create();
+                    List<ItemObject> posts = new ArrayList<ItemObject>();
+                    posts.clear();
                     recyclerView.setVisibility(View.VISIBLE);
                     posts = Arrays.asList(mGson.fromJson(response, ItemObject[].class));
                     adapter = new RecyclerViewAdapter(MainActivity.this, posts);
                     recyclerView.setAdapter(adapter);
                     getSupportActionBar().setSubtitle("");
                     getSupportActionBar().setSubtitle(subTituloA + " (" + String.valueOf(adapter.getItemCount()) + ")");
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Actualmente no hay novedades a mostrar de este tipo", Toast.LENGTH_LONG).show();
+                    getSupportActionBar().setSubtitle(subTituloA + " (0)");
+                    recyclerView.setVisibility(View.GONE);
                 }
 
+
             }
-        }, new Response.ErrorListener() {
+
+        }, new Response.ErrorListener()
+
+        {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Tag2", "Error " + error.getMessage());
+                Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
         queue.add(stringRequest);
